@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -30,9 +26,10 @@ public class CheckersActivity extends Activity {
 	public boolean[] isKing;
 
 	private GridView gv;
-	private ImageView iv;
 
 	public int position1 = 0;
+
+	public int jumpCounter = 0;
 
 	public int player1kills = 0;
 	public int player2kills = 0;
@@ -42,15 +39,23 @@ public class CheckersActivity extends Activity {
 
 	public void createNewGame() {
 
-		TextView tv = (TextView) findViewById(R.id.textView4);
-		tv.setBackgroundColor(Color.BLACK);
+		TextView tv;
+
+		tv = (TextView) findViewById(R.id.textView3);
+		tv.setText("Player 1's Turn");
+		tv.setTextColor(Color.BLACK);
+
+		tv = (TextView) findViewById(R.id.textView4);
+		tv.setBackgroundColor(Color.WHITE);
 
 		player1kills = 0;
 		player2kills = 0;
-		
+
 		pieceValue = new Integer[64];
 
 		isKing = new boolean[64];
+
+		// Clearing pieces and kings
 
 		for (int i = 0; i<pieceValue.length; i++) {
 
@@ -61,6 +66,8 @@ public class CheckersActivity extends Activity {
 		}
 
 		int j = 0;
+
+		// Initializing pieces on board
 
 		for (int i = 0; i<pieceValue.length-40; i++) {
 
@@ -90,6 +97,7 @@ public class CheckersActivity extends Activity {
 
 		}
 
+		// Player 1's Turn
 		playerTurn = true;
 
 		gameDone = false;
@@ -128,6 +136,25 @@ public class CheckersActivity extends Activity {
 
 					pieceValue[pos1+7] = 0;
 
+					if (Math.abs(pos2-pos1) > 20) {
+
+						if (pos2%8 < (pos1+7+14)%8) {
+
+							pieceValue[pos1+7+14] = 0;
+
+							tv = (TextView) gv.getChildAt(pos1+7+14);
+							tv.setBackgroundColor(Color.TRANSPARENT);
+
+							if (pieceValue[pos1] == 1) {
+								player1kills++;
+							} else if (pieceValue[pos1] == 2) {
+								player2kills++;
+							}
+
+						}
+
+					}
+
 					tv = (TextView) gv.getChildAt(pos1+7);
 					tv.setBackgroundColor(Color.TRANSPARENT);
 
@@ -136,6 +163,25 @@ public class CheckersActivity extends Activity {
 				if (pos2%8 > pos1%8) {
 
 					pieceValue[pos1+9] = 0;
+
+					if (Math.abs(pos2-pos1) > 20) {
+
+						if (pos2%8 > (pos1+9+18)%8) {
+
+							pieceValue[pos1+9+18] = 0;
+
+							tv = (TextView) gv.getChildAt(pos1+9+18);
+							tv.setBackgroundColor(Color.TRANSPARENT);
+
+							if (pieceValue[pos1] == 1) {
+								player1kills++;
+							} else if (pieceValue[pos1] == 2) {
+								player2kills++;
+							}
+
+						}
+
+					}
 
 					tv = (TextView) gv.getChildAt(pos1+9);
 					tv.setBackgroundColor(Color.TRANSPARENT);
@@ -150,6 +196,25 @@ public class CheckersActivity extends Activity {
 
 					pieceValue[pos1-9] = 0;
 
+					if (Math.abs(pos2-pos1) > 20) {
+
+						if (pos2%8 < (pos1-9-18)%8) {
+
+							pieceValue[pos1-9-18] = 0;
+
+							tv = (TextView) gv.getChildAt(pos1-9-18);
+							tv.setBackgroundColor(Color.TRANSPARENT);
+
+							if (pieceValue[pos1] == 1) {
+								player1kills++;
+							} else if (pieceValue[pos1] == 2) {
+								player2kills++;
+							}
+
+						}
+
+					}
+
 					tv = (TextView) gv.getChildAt(pos1-9);
 					tv.setBackgroundColor(Color.TRANSPARENT);
 
@@ -159,12 +224,254 @@ public class CheckersActivity extends Activity {
 
 					pieceValue[pos1-7] = 0;
 
+					if (Math.abs(pos2-pos1) > 20) {
+
+						if (pos2%8 > (pos1-7-14)%8) {
+
+							pieceValue[pos1-7-14] = 0;
+
+							tv = (TextView) gv.getChildAt(pos1-7-14);
+							tv.setBackgroundColor(Color.TRANSPARENT);
+
+							if (pieceValue[pos1] == 1) {
+								player1kills++;
+							} else if (pieceValue[pos1] == 2) {
+								player2kills++;
+							}
+
+						}
+
+					}	
+
 					tv = (TextView) gv.getChildAt(pos1-7);
 					tv.setBackgroundColor(Color.TRANSPARENT);
 
-				}				
+				}
 
 			}
+
+			if (pos2%8 == pos1%8) {
+
+				if (pos1%8 >= 2) { // left
+
+					if ((pos1 > 31) && ((pieceValue[pos1] == 2) || isKing[pos1] == true)) {
+
+						if ((pieceValue[pos1-9] != 0) && (pieceValue[pos1-9] != pieceValue[pos1]) && (pieceValue[pos1-9] == pieceValue[pos1-9-16]) && (pieceValue[pos1-18] == 0) && (pieceValue[pos2] == 0)) {
+
+							if (playerTurn == true) {
+								player1kills++;
+							} else if (playerTurn == false) {
+								player2kills++;
+							}
+
+							pieceValue[pos1-9] = 0;
+							pieceValue[pos1-9-16] = 0;
+
+							tv = (TextView) gv.getChildAt(pos1-9);
+							tv.setBackgroundColor(Color.TRANSPARENT);
+
+							tv = (TextView) gv.getChildAt(pos1-9-16);
+							tv.setBackgroundColor(Color.TRANSPARENT);							
+
+						}
+
+					}
+
+					if ((pos1 < 32) && ((pieceValue[pos1] == 1) || isKing[pos1] == true)) {
+
+						if ((pieceValue[pos1+7] != 0) && (pieceValue[pos1+7] != pieceValue[pos1]) && (pieceValue[pos1+7] == pieceValue[pos1+7+16]) && (pieceValue[pos1+14] == 0) && (pieceValue[pos2] == 0)) {
+
+							if (playerTurn == true) {
+								player1kills++;
+							} else if (playerTurn == false) {
+								player2kills++;
+							}
+
+							pieceValue[pos1+7] = 0;
+							pieceValue[pos1+7+16] = 0;
+
+							tv = (TextView) gv.getChildAt(pos1+7);
+							tv.setBackgroundColor(Color.TRANSPARENT);
+
+							tv = (TextView) gv.getChildAt(pos1+7+16);
+							tv.setBackgroundColor(Color.TRANSPARENT);
+
+						}
+
+					}
+
+				}
+
+				if (pos1%8 <= 5) { // right
+
+					if ((pos1 > 31) && ((pieceValue[pos1] == 2) || isKing[pos1] == true)) {
+
+						if ((pieceValue[pos1-7] != 0) && (pieceValue[pos1-7] != pieceValue[pos1]) && (pieceValue[pos1-7] == pieceValue[pos1-7-16]) && (pieceValue[pos1-14] == 0) && (pieceValue[pos2] == 0)) {
+
+							if (playerTurn == true) {
+								player1kills++;
+							} else if (playerTurn == false) {
+								player2kills++;
+							}
+
+							pieceValue[pos1-7] = 0;
+							pieceValue[pos1-7-16] = 0;
+
+							tv = (TextView) gv.getChildAt(pos1-7);
+							tv.setBackgroundColor(Color.TRANSPARENT);
+
+							tv = (TextView) gv.getChildAt(pos1-7-16);
+							tv.setBackgroundColor(Color.TRANSPARENT);							
+
+						}
+
+					}
+
+					if ((pos1 < 32) && ((pieceValue[pos1] == 1) || isKing[pos1] == true)) {
+
+						if ((pieceValue[pos1+9] != 0) && (pieceValue[pos1+9] != pieceValue[pos1]) && (pieceValue[pos1+9] == pieceValue[pos1+9+16]) && (pieceValue[pos1+18] == 0) && (pieceValue[pos2] == 0)) {
+
+							if (playerTurn == true) {
+								player1kills++;
+							} else if (playerTurn == false) {
+								player2kills++;
+							}
+
+							pieceValue[pos1+9] = 0;
+							pieceValue[pos1+9+16] = 0;
+
+							tv = (TextView) gv.getChildAt(pos1+9);
+							tv.setBackgroundColor(Color.TRANSPARENT);
+
+							tv = (TextView) gv.getChildAt(pos1+9+16);
+							tv.setBackgroundColor(Color.TRANSPARENT);							
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		if ((Math.abs(pos2-pos1) <= 7) && (isKing[pos1])) {
+
+			if (pos1 <= 47) { // down
+
+				if (pos1%8 <= 3) { // right
+
+					if ((pieceValue[pos1+9] != 0) && (pieceValue[pos1+9] != pieceValue[pos1]) && (pieceValue[pos1+9] == pieceValue[pos1+9+2]) && (pieceValue[pos1+18] == 0) && (pieceValue[pos2] == 0)) {
+
+						if (playerTurn == true) {
+							player1kills++;
+							player1kills++;
+						} else if (playerTurn == false) {
+							player2kills++;
+							player2kills++;
+						}
+
+						pieceValue[pos1+9] = 0;
+						pieceValue[pos1+9+2] = 0;
+
+						tv = (TextView) gv.getChildAt(pos1+9);
+						tv.setBackgroundColor(Color.TRANSPARENT);
+
+						tv = (TextView) gv.getChildAt(pos1+9+2);
+						tv.setBackgroundColor(Color.TRANSPARENT);							
+
+					}
+
+				}
+
+				if (pos1%8 >= 4) { // left
+
+					if ((pieceValue[pos1+7] != 0) && (pieceValue[pos1+7] != pieceValue[pos1]) && (pieceValue[pos1+7] == pieceValue[pos1+7-2]) && (pieceValue[pos1+14] == 0) && (pieceValue[pos2] == 0)) {
+
+						if (playerTurn == true) {
+							player1kills++;
+							player1kills++;
+						} else if (playerTurn == false) {
+							player2kills++;
+							player2kills++;
+						}
+
+						pieceValue[pos1+7] = 0;
+						pieceValue[pos1+7-2] = 0;
+
+						tv = (TextView) gv.getChildAt(pos1+7);
+						tv.setBackgroundColor(Color.TRANSPARENT);
+
+						tv = (TextView) gv.getChildAt(pos1+7-2);
+						tv.setBackgroundColor(Color.TRANSPARENT);							
+
+					}	
+
+				}
+
+			}
+
+			if (pos1 >= 16) { // up
+
+				if (pos1%8 <= 3) { // right
+
+					if ((pieceValue[pos1-7] != 0) && (pieceValue[pos1-7] != pieceValue[pos1]) && (pieceValue[pos1-7] == pieceValue[pos1-7+2]) && (pieceValue[pos1-14] == 0) && (pieceValue[pos2] == 0)) {
+
+						if (playerTurn == true) {
+							player1kills++;
+							player1kills++;
+						} else if (playerTurn == false) {
+							player2kills++;
+							player2kills++;
+						}
+
+						pieceValue[pos1-7] = 0;
+						pieceValue[pos1-7+2] = 0;
+
+						tv = (TextView) gv.getChildAt(pos1-7);
+						tv.setBackgroundColor(Color.TRANSPARENT);
+
+						tv = (TextView) gv.getChildAt(pos1-7+2);
+						tv.setBackgroundColor(Color.TRANSPARENT);							
+
+					}					
+
+				}
+
+				if (pos1%8 >= 4) { // left
+
+					if ((pieceValue[pos1-9] != 0) && (pieceValue[pos1-9] != pieceValue[pos1]) && (pieceValue[pos1-9] == pieceValue[pos1-9-2]) && (pieceValue[pos1-18] == 0) && (pieceValue[pos2] == 0)) {
+
+						if (playerTurn == true) {
+							player1kills++;
+							player1kills++;
+						} else if (playerTurn == false) {
+							player2kills++;
+							player2kills++;
+						}
+
+						pieceValue[pos1-9] = 0;
+						pieceValue[pos1-9-2] = 0;
+
+						tv = (TextView) gv.getChildAt(pos1-9);
+						tv.setBackgroundColor(Color.TRANSPARENT);
+
+						tv = (TextView) gv.getChildAt(pos1-9-2);
+						tv.setBackgroundColor(Color.TRANSPARENT);							
+
+					}					
+
+				}
+
+			}
+
+		}
+
+		if (isKing[pos1]) {
+
+			isKing[pos2] = true;
+			isKing[pos1] = false;
 
 		}
 
@@ -182,26 +489,32 @@ public class CheckersActivity extends Activity {
 		tv = (TextView) gv.getChildAt(pos1);
 		tv.setBackgroundColor(Color.TRANSPARENT);
 
+		makeKing(pos2);
+
+		if (turn) {
+			switchTurns();
+		}
+
+	}
+
+	public void makeKing(int pos) {
+
 		if (playerTurn == true) {
 
-			if (pos2 > 55) {
+			if (pos > 55) {
 
-				isKing[pos2] = true;
+				isKing[pos] = true;
 
 			}
 
 		} else if (playerTurn == false) {
 
-			if (pos2 < 8) {
+			if (pos < 8) {
 
-				isKing[pos2] = true;
+				isKing[pos] = true;
 
 			}
 
-		}
-
-		if (turn) {
-			switchTurns();
 		}
 
 	}
@@ -236,28 +549,28 @@ public class CheckersActivity extends Activity {
 
 	}
 
-	public void highlightPossibleMoves(TextView tv, int position, int opp, boolean jump) {
+	public void highlightPossibleMoves(TextView tv, int position, int opp, boolean jump, boolean kingjump) {
 
-		if (opp == 0) {
+		if (jumpCounter == 0) {
 
-			if (pieceValue[position] == 1) {
-				opp = 2;
-			} else if (pieceValue[position] == 2) {
-				opp = 1;
+			if (opp == 0) {
+
+				if (pieceValue[position] == 1) {
+					opp = 2;
+				} else if (pieceValue[position] == 2) {
+					opp = 1;
+				}
+
 			}
 
-		}
+			// Player 1 \/
+			// Player 2 /\
 
-		// Player 1 \/
-		// Player 2 /\
-
-		// Checks for Empty
-
-		if (isKing[position] == false) {
+			// Checks for Empty
 
 			if (jump == false) {
 
-				if (opp == 2) {
+				if ((opp == 2) || (isKing[position] == true)) {
 
 					if (((position+1)%8 != 0) && (position <= 55)) {
 
@@ -284,7 +597,7 @@ public class CheckersActivity extends Activity {
 
 				}
 
-				if (opp == 1) {
+				if ((opp == 1) || (isKing[position] == true)) {
 
 					if ((position >= 8) && (position%8 != 0)) {
 						if (pieceValue[position-9] == 0) {
@@ -312,7 +625,7 @@ public class CheckersActivity extends Activity {
 
 			// Checks for Jump-Over
 
-			if (opp == 2) {
+			if ((opp == 2) || (isKing[position] == true) || (kingjump)) {
 
 				if (((position+1)%8 != 0) && ((position+2)%8 != 0) && (position <= 47)) {
 
@@ -324,7 +637,7 @@ public class CheckersActivity extends Activity {
 
 							pieceValue[position+18] = 3;
 
-							highlightPossibleMoves(tv, position+18,opp,true);
+							highlightPossibleMoves(tv, position+18,opp,true,isKing[position]);
 
 						}
 
@@ -342,7 +655,7 @@ public class CheckersActivity extends Activity {
 
 							pieceValue[position+14] = 3;
 
-							highlightPossibleMoves(tv, position+14,opp,true);
+							highlightPossibleMoves(tv, position+14,opp,true,isKing[position]);
 
 						}
 
@@ -352,7 +665,7 @@ public class CheckersActivity extends Activity {
 
 			}
 
-			if (opp == 1) {
+			if ((opp == 1) || (isKing[position] == true) || (kingjump)) {
 
 				if (((position+1)%8 != 0) && ((position+2)%8 != 0) && (position >= 16)) {
 
@@ -364,7 +677,7 @@ public class CheckersActivity extends Activity {
 
 							pieceValue[position-14] = 3;
 
-							highlightPossibleMoves(tv, position-14,opp,true);
+							highlightPossibleMoves(tv, position-14,opp,true,isKing[position]);
 
 						}
 
@@ -382,7 +695,7 @@ public class CheckersActivity extends Activity {
 
 							pieceValue[position-18] = 3;
 
-							highlightPossibleMoves(tv, position-18,opp,true);
+							highlightPossibleMoves(tv, position-18,opp,true,isKing[position]);
 
 						}
 
@@ -392,134 +705,10 @@ public class CheckersActivity extends Activity {
 
 			}
 
-		} else if (isKing[position] == true) {
+		}
 
-			// Checks for Empty
-
-			if (jump == false) {
-
-				if (((position+1)%8 != 0) && (position <= 55)) {
-
-					if ((pieceValue[position+9] == 0)) {	
-						tv = (TextView) gv.getChildAt(position+9);
-						tv.setBackgroundColor(Color.CYAN);		
-
-						pieceValue[position+9] = 3;
-
-					}
-
-				}
-
-				if ((position%8 != 0) && (position <= 55)) {
-
-					if ((pieceValue[position+7] == 0)) {
-						tv = (TextView) gv.getChildAt(position+7);
-						tv.setBackgroundColor(Color.CYAN);		
-
-						pieceValue[position+7] = 3;
-
-					}
-
-				}
-
-				if ((position >= 8) && (position%8 != 0)) {
-					if (pieceValue[position-9] == 0) {
-						tv = (TextView) gv.getChildAt(position-9);
-						tv.setBackgroundColor(Color.CYAN);		
-
-						pieceValue[position-9] = 3;
-
-					}
-				}
-
-				if (((position+1)%8 != 0) && (position >= 8)) {
-
-					if ((pieceValue[position-7] == 0)) {
-						tv = (TextView) gv.getChildAt(position-7);
-						tv.setBackgroundColor(Color.CYAN);		
-
-						pieceValue[position-7] = 3;
-
-					}
-
-				}
-
-			}
-
-			// Checks for Jump-Over
-
-			if (((position+1)%8 != 0) && ((position+2)%8 != 0) && (position <= 47)) {
-
-				if ((pieceValue[position+9] == opp)) {	
-
-					if (pieceValue[position+18] == 0) {
-						tv = (TextView) gv.getChildAt(position+18);
-						tv.setBackgroundColor(Color.CYAN);		
-
-						pieceValue[position+18] = 3;
-
-						highlightPossibleMoves(tv, position+18,opp,true);
-
-					}
-
-				}
-
-			}
-
-			if (((position)%8 != 0) && ((position-1)%8 != 0) && (position <= 47)) {
-
-				if ((pieceValue[position+7] == opp)) {	
-
-					if (pieceValue[position+14] == 0) {
-						tv = (TextView) gv.getChildAt(position+14);
-						tv.setBackgroundColor(Color.CYAN);		
-
-						pieceValue[position+14] = 3;
-
-						highlightPossibleMoves(tv, position+14,opp,true);
-
-					}
-
-				}
-
-			}
-
-			if (((position+1)%8 != 0) && ((position+2)%8 != 0) && (position >= 16)) {
-
-				if ((pieceValue[position-7] == opp)) {	
-
-					if (pieceValue[position-14] == 0) {
-						tv = (TextView) gv.getChildAt(position-14);
-						tv.setBackgroundColor(Color.CYAN);		
-
-						pieceValue[position-14] = 3;
-
-						highlightPossibleMoves(tv, position-14,opp,true);
-
-					}
-
-				}
-
-			}
-
-			if (((position)%8 != 0) && ((position-1)%8 != 0) && (position >= 16)) {
-
-				if ((pieceValue[position-9] == opp)) {	
-
-					if (pieceValue[position+-18] == 0) {
-						tv = (TextView) gv.getChildAt(position-18);
-						tv.setBackgroundColor(Color.CYAN);		
-
-						pieceValue[position-18] = 3;
-
-						highlightPossibleMoves(tv, position-18,opp,true);
-
-					}
-
-				}
-
-			}
-
+		if (jump == true) {
+			jumpCounter++;
 		}
 
 	}
@@ -597,13 +786,15 @@ public class CheckersActivity extends Activity {
 
 					if (pieceValue[position] != 0) {
 
+						jumpCounter = 0;
+
 						if ((pieceValue[position] == 1) && (playerTurn == true)) {
 
 							clearHighlightedPieceValues();
 
 							//highlight possible moves (set tv background as a highlight color) (set pieceValue[possible positions] = 3)
 
-							highlightPossibleMoves(tv,position,0,false);
+							highlightPossibleMoves(tv,position,0,false,false);
 
 							position1 = position;
 
@@ -615,7 +806,7 @@ public class CheckersActivity extends Activity {
 
 							//highlight possible moves (set tv background as a highlight color) (set pieceValue[position] = 3)
 
-							highlightPossibleMoves(tv,position,0,false);
+							highlightPossibleMoves(tv,position,0,false,false);
 
 							position1 = position;
 
@@ -639,9 +830,18 @@ public class CheckersActivity extends Activity {
 							clearHighlightedPieceValues();
 
 						}
-							
+
 						performMove(position1,position,true);
-						
+
+						tv = (TextView) findViewById(R.id.textView3);
+						if (playerTurn == true) {
+							tv.setText("Player 1's Turn");
+							tv.setTextColor(Color.BLACK);
+						} else {
+							tv.setText("Player 2's Turn");
+							tv.setTextColor(Color.RED);
+						}
+
 						adapter.notifyDataSetChanged();
 
 						position1 = 0;
@@ -680,12 +880,12 @@ public class CheckersActivity extends Activity {
 						public void onClick(View v) {
 
 							createNewGame();
-							
+
 							adapter.notifyDataSetChanged();
-							
+
 							TextView t = (TextView) findViewById(R.id.textView4);
-							
-							t.setBackgroundColor(Color.BLACK);
+
+							t.setBackgroundColor(Color.WHITE);
 
 						}
 

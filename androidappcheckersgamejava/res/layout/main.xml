@@ -3,6 +3,7 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/whitescreen"
     android:orientation="vertical" >
 
     <TextView
@@ -22,16 +23,16 @@
         android:layout_below="@+id/textView1"
         android:text="@string/Player2R"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
+
     <GridView
         android:id="@+id/gridView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView2"
-        android:horizontalSpacing="0px"
+        android:horizontalSpacing="8px"
         android:numColumns="8"
-        android:verticalSpacing="0px" >
+        android:verticalSpacing="7px" >
 
     </GridView>
 
@@ -61,6 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:gravity="center"
         android:text="@string/blank"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
