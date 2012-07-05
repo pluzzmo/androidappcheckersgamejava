@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, CheckersActivity!</string>
+    <string name="app_name">Checkers</string>
+    <string name="Player1">Player 1 = Red</string>
+    <string name="Player2">Player 2 = blue</string>
+    <string name="Player2b">Player 2 = Blue</string>
+    <string name="blank"></string>
+    <string name="Player1B">Player 1: Black</string>
+    <string name="Player2R">Player 2: Red</string>
+    <string name="NewGame">New Game</string>
+
+</resources>
