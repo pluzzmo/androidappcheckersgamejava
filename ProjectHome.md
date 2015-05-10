@@ -1,0 +1,1 @@
+A checkers game using images for pieces and a click-click method for moving pieces.
